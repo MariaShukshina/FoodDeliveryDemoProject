@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Menu"
+        android:icon="@drawable/ic_menu_default"
+        android:id="@+id/homeFragment"
+        />
+
+    <item android:title="Profile"
+        android:icon="@drawable/ic_profile_default"
+        android:id="@+id/profileFragment"
+        />
+
+    <item android:title="Trash"
+        android:icon="@drawable/ic_trash_default"
+        android:id="@+id/trashFragment"/>
+
+</menu>
