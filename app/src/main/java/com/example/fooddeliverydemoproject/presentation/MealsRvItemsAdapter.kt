@@ -32,6 +32,11 @@ class MealsRvItemsAdapter(private val context: Context): RecyclerView.Adapter<Me
         val meal = meals[position]
         holder.mealName.text = meal.strMeal
 
+        if (meal.strMeal == context.getString(R.string.no_meal_found)) {
+            holder.priceTv.text = context.getString(R.string.price_not_available)
+        } else {
+            holder.priceTv.text = context.getString(R.string.price)
+        }
         Glide.with(holder.itemView)
             .load(meal.strMealThumb)
             .placeholder(ContextCompat.getDrawable(context, R.drawable.meal_placeholder))
@@ -41,5 +46,6 @@ class MealsRvItemsAdapter(private val context: Context): RecyclerView.Adapter<Me
     class ViewHolder(binding: MealsRvItemBinding): RecyclerView.ViewHolder(binding.root) {
         val image = binding.mealImage
         val mealName = binding.mealNameTv
+        val priceTv = binding.mealPriceTv
     }
 }

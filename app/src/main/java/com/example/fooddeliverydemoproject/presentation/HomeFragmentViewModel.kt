@@ -1,5 +1,8 @@
 package com.example.fooddeliverydemoproject.presentation
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,18 +14,40 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeFragmentViewModel(private val repository: FoodApiRepository): ViewModel() {
+class HomeFragmentViewModel(private val repository: FoodApiRepository, context: Context)
+    : ViewModel() {
 
     private val _categoriesResponse = MutableLiveData<CategoriesList?>(null)
     val categoriesResponse
         get() = _categoriesResponse
 
-    private val mealsByCategoryResponse = MutableLiveData<MealsByCategory?>(null)
-    val mealsByCategory
-        get() = mealsByCategoryResponse
+    private val _mealsByCategoryResponse = MutableLiveData<MealsByCategory?>(null)
+    val mealsByCategoryResponse
+        get() = _mealsByCategoryResponse
+
+    private val _internetConnectionState = MutableLiveData(false)
+    val internetConnectionState
+        get() = _internetConnectionState
 
     init {
-        getCategories()
+        viewModelScope.launch {
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val networkCallback = object : ConnectivityManager.NetworkCallback() {
+
+                override fun onAvailable(network: Network) {
+                    _internetConnectionState.postValue(true)
+                    getCategories()
+                    getMealsByCategory("Beef")
+                }
+
+                override fun onLost(network: Network) {
+                    _internetConnectionState.postValue(false)
+                }
+            }
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        }
+
     }
 
     private fun getCategories() {
@@ -51,13 +76,14 @@ class HomeFragmentViewModel(private val repository: FoodApiRepository): ViewMode
                     response: Response<MealsByCategory>
                 ) {
                     if (response.body() == null) {
-                        mealsByCategoryResponse.postValue(null)
+                        _mealsByCategoryResponse.postValue(null)
                         return
                     }
-                    mealsByCategoryResponse.postValue(response.body())
+                    _mealsByCategoryResponse.postValue(response.body())
                 }
 
                 override fun onFailure(call: Call<MealsByCategory>, t: Throwable) {
+                    _mealsByCategoryResponse.postValue(null)
                     t.printStackTrace()
                 }
             })

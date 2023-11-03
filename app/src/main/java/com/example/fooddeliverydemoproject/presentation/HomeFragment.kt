@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
 
         observeCategoriesData(categoriesAdapter, context)
 
-        observeMealsData(mealsAdapter)
+        observeMealsData(mealsAdapter, context)
     }
 
     private fun observeCategoriesData(adapter: CategoriesRvItemsAdapter, context: Context) {
@@ -64,22 +64,23 @@ class HomeFragment : Fragment() {
             if (it != null) {
                 adapter.setCategoryList(it.categories)
             } else {
-                val categoryName = context.getString(R.string.no_category_found)
+                val categoryNotFound = context.getString(R.string.no_category_found)
                 adapter.setCategoryList(listOf(
-                    Category("", categoryName, "", "")))
+                    Category("", categoryNotFound, "", "")))
             }
         }
     }
 
-    private fun observeMealsData(adapter: MealsRvItemsAdapter) {
-        viewModel.mealsByCategory.observe(viewLifecycleOwner) {
+    private fun observeMealsData(adapter: MealsRvItemsAdapter, context: Context) {
+        viewModel.mealsByCategoryResponse.observe(viewLifecycleOwner) {
             if (it != null) {
                 adapter.setMealsList(it.meals)
             } else {
+                val mealNotFound = context.getString(R.string.no_meal_found)
                 adapter.setMealsList(listOf(
-                    Meal("", "No meal found.", ""),
-                    Meal("", "No meal found.", ""),
-                    Meal("", "No meal found.", "")
+                    Meal("", mealNotFound, ""),
+                    Meal("", mealNotFound, ""),
+                    Meal("", mealNotFound, "")
                 ))
             }
         }
