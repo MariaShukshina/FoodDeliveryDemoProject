@@ -42,12 +42,18 @@ class CategoriesRvItemsAdapter(private val context: Context): RecyclerView.Adapt
             notifyItemChanged(previousSelectedItem)
             notifyItemChanged(selectedItem)
         }
-        if (selectedItem == position) {
-            holder.textView.setTextColor(ContextCompat.getColor(context, R.color.selected_icon_color))
-            holder.itemView.background = ContextCompat.getDrawable(context, R.drawable.category_selected_background)
-        } else {
-            holder.textView.setTextColor(ContextCompat.getColor(context, R.color.default_category_text))
-            holder.itemView.background = ContextCompat.getDrawable(context, R.drawable.category_default_background)
+        if (category.strCategory != context.getString(R.string.no_category_found)) {
+            if (selectedItem == position) {
+                holder.textView.setTextColor(ContextCompat.getColor(context,
+                    R.color.selected_icon_color))
+                holder.itemView.background = ContextCompat.getDrawable(context,
+                    R.drawable.category_selected_background)
+            } else {
+                holder.textView.setTextColor(ContextCompat.getColor(context,
+                    R.color.default_category_text))
+                holder.itemView.background = ContextCompat.getDrawable(context,
+                    R.drawable.category_default_background)
+            }
         }
     }
 

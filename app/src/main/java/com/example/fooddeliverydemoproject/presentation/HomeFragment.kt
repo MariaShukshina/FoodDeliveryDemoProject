@@ -1,11 +1,13 @@
 package com.example.fooddeliverydemoproject.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fooddeliverydemoproject.R
 import com.example.fooddeliverydemoproject.databinding.FragmentHomeBinding
 import com.example.fooddeliverydemoproject.presentation.utils.Constants
 import com.example.fooddeliverydemoproject.retrofit.Category
@@ -30,19 +32,21 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val context = requireContext()
+
         val bannersAdapter = BannersRvItemsAdapter()
-        binding.bannersRv.layoutManager = LinearLayoutManager(requireContext(),
+        binding.bannersRv.layoutManager = LinearLayoutManager(context,
             LinearLayoutManager.HORIZONTAL, false)
         binding.bannersRv.adapter = bannersAdapter
         bannersAdapter.setImageList(Constants.promoImageList)
 
-        val categoriesAdapter = CategoriesRvItemsAdapter(requireContext())
-        binding.categoriesRv.layoutManager = LinearLayoutManager(requireContext(),
+        val categoriesAdapter = CategoriesRvItemsAdapter(context)
+        binding.categoriesRv.layoutManager = LinearLayoutManager(context,
             LinearLayoutManager.HORIZONTAL, false)
         binding.categoriesRv.adapter = categoriesAdapter
 
-        val mealsAdapter = MealsRvItemsAdapter(requireContext())
-        binding.mealsRv.layoutManager = LinearLayoutManager(requireContext(),
+        val mealsAdapter = MealsRvItemsAdapter(context)
+        binding.mealsRv.layoutManager = LinearLayoutManager(context,
             LinearLayoutManager.VERTICAL, false)
         binding.mealsRv.adapter = mealsAdapter
 
@@ -50,21 +54,19 @@ class HomeFragment : Fragment() {
             viewModel.getMealsByCategory(it)
         }
 
-        observeCategoriesData(categoriesAdapter)
+        observeCategoriesData(categoriesAdapter, context)
 
         observeMealsData(mealsAdapter)
     }
 
-    private fun observeCategoriesData(adapter: CategoriesRvItemsAdapter) {
+    private fun observeCategoriesData(adapter: CategoriesRvItemsAdapter, context: Context) {
         viewModel.categoriesResponse.observe(viewLifecycleOwner) {
             if (it != null) {
                 adapter.setCategoryList(it.categories)
             } else {
+                val categoryName = context.getString(R.string.no_category_found)
                 adapter.setCategoryList(listOf(
-                    Category("", "Pizza", "", ""),
-                    Category("", "Pasta", "", ""),
-                    Category("", "Seafood", "", ""),
-                    Category("", "Beef", "", "")))
+                    Category("", categoryName, "", "")))
             }
         }
     }

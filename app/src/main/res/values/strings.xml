@@ -5,4 +5,5 @@
     <string name="moscow">Moscow</string>
     <string name="meal_name">Meal name</string>
     <string name="banners">Banners</string>
+    <string name="no_category_found">No category found</string>
 </resources>
