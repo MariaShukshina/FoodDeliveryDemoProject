@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.fooddeliverydemoproject.R
 import com.example.fooddeliverydemoproject.databinding.MealsRvItemBinding
-import com.example.fooddeliverydemoproject.retrofit.Meal
+import com.example.fooddeliverydemoproject.data_source.retrofit.Meal
 
 class MealsRvItemsAdapter(private val context: Context): RecyclerView.Adapter<MealsRvItemsAdapter.ViewHolder>() {
 

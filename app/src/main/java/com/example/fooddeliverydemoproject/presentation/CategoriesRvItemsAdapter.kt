@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fooddeliverydemoproject.R
 import com.example.fooddeliverydemoproject.databinding.CategoriesRvItemBinding
-import com.example.fooddeliverydemoproject.retrofit.Category
+import com.example.fooddeliverydemoproject.data_source.retrofit.Category
 
 class CategoriesRvItemsAdapter(private val context: Context): RecyclerView.Adapter<CategoriesRvItemsAdapter.ViewHolder>() {
 
@@ -35,7 +35,10 @@ class CategoriesRvItemsAdapter(private val context: Context): RecyclerView.Adapt
         holder.textView.text = category.strCategory
         holder.itemView.setOnClickListener {
 
-            onCategoryClickListener.invoke(category.strCategory)
+            if (category.strCategory != context.getString(R.string.no_category_found))
+            {
+                onCategoryClickListener.invoke(category.strCategory)
+            }
 
             val previousSelectedItem = selectedItem
             selectedItem = holder.adapterPosition

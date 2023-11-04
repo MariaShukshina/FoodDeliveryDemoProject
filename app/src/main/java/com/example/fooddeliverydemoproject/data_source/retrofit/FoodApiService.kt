@@ -1,4 +1,4 @@
-package com.example.fooddeliverydemoproject.retrofit
+package com.example.fooddeliverydemoproject.data_source.retrofit
 
 import retrofit2.Call
 import retrofit2.http.GET
