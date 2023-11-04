@@ -7,6 +7,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
+        android:layout_marginStart="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -72,7 +73,6 @@
             tools:listitem="@layout/categories_rv_item"
             tools:orientation="horizontal"
             app:layout_anchor="@id/toolbar"
-            android:layout_marginStart="8dp"
             android:layout_marginBottom="10dp"
             app:layout_anchorGravity="bottom"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

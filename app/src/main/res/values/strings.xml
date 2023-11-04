@@ -6,7 +6,7 @@
     <string name="meal_name">Meal name</string>
     <string name="banners">Banners</string>
     <string name="no_category_found">No category found</string>
-    <string name="price">10$</string>
+    <string name="price">$10</string>
     <string name="no_meal_found">No meal found.</string>
     <string name="price_not_available">Not available</string>
 </resources>
