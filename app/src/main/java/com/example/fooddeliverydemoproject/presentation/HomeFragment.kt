@@ -12,6 +12,7 @@ import com.example.fooddeliverydemoproject.databinding.FragmentHomeBinding
 import com.example.fooddeliverydemoproject.presentation.utils.Constants
 import com.example.fooddeliverydemoproject.retrofit.Category
 import com.example.fooddeliverydemoproject.retrofit.Meal
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
@@ -51,7 +52,12 @@ class HomeFragment : Fragment() {
         binding.mealsRv.adapter = mealsAdapter
 
         categoriesAdapter.onCategoryClickListener = {
-            viewModel.getMealsByCategory(it)
+            if (viewModel.internetConnectionState.value == true) {
+                viewModel.getMealsByCategory(it)
+            } else {
+                Snackbar.make(binding.root, getString(R.string.no_internet_connection),
+                    Snackbar.LENGTH_SHORT).show()
+            }
         }
 
         observeCategoriesData(categoriesAdapter, context)
