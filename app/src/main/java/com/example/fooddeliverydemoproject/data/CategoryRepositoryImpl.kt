@@ -1,16 +1,15 @@
 package com.example.fooddeliverydemoproject.data
 
-import androidx.lifecycle.LiveData
-import com.example.fooddeliverydemoproject.data_source.database.CategoryDao
-import com.example.fooddeliverydemoproject.data_source.database.MyCategory
+import com.example.fooddeliverydemoproject.data.data_source.database.CategoryDao
+import com.example.fooddeliverydemoproject.data.data_source.database.models.MyCategory
 import com.example.fooddeliverydemoproject.domain.CategoryRepository
 
 class CategoryRepositoryImpl(private val dao: CategoryDao): CategoryRepository {
-    override fun getAllCategories(): LiveData<List<MyCategory>> {
+    override fun getAllCategories(): List<MyCategory> {
         return dao.getAllCategories()
     }
 
-    override fun deleteAllCategories() {
+    override suspend fun deleteAllCategories() {
         dao.deleteAllCategories()
     }
 

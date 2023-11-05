@@ -1,4 +1,4 @@
-package com.example.fooddeliverydemoproject.data_source.retrofit
+package com.example.fooddeliverydemoproject.data.data_source.retrofit
 
 data class Category(
     val idCategory: String,

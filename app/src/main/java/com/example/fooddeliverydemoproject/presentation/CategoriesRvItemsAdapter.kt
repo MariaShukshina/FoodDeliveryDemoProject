@@ -8,12 +8,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fooddeliverydemoproject.R
 import com.example.fooddeliverydemoproject.databinding.CategoriesRvItemBinding
-import com.example.fooddeliverydemoproject.data_source.retrofit.Category
+import com.example.fooddeliverydemoproject.data.data_source.retrofit.Category
 
 class CategoriesRvItemsAdapter(private val context: Context): RecyclerView.Adapter<CategoriesRvItemsAdapter.ViewHolder>() {
 
     private var categories: List<Category> = listOf()
-    private var selectedItem = -1
+    private var selectedItem = 0
     lateinit var onCategoryClickListener: (String) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

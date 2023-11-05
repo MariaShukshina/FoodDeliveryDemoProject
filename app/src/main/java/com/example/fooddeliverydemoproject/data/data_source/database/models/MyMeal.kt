@@ -1,4 +1,4 @@
-package com.example.fooddeliverydemoproject.data_source.database
+package com.example.fooddeliverydemoproject.data.data_source.database.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,12 +1,11 @@
 package com.example.fooddeliverydemoproject.data
 
-import androidx.lifecycle.LiveData
-import com.example.fooddeliverydemoproject.data_source.database.MealDao
-import com.example.fooddeliverydemoproject.data_source.database.MyMeal
+import com.example.fooddeliverydemoproject.data.data_source.database.MealDao
+import com.example.fooddeliverydemoproject.data.data_source.database.models.MyMeal
 import com.example.fooddeliverydemoproject.domain.MealsRepository
 
 class MealRepositoryImpl(private val dao: MealDao): MealsRepository {
-    override fun getAllMeals(): LiveData<List<MyMeal>> {
+    override fun getAllMeals(): List<MyMeal> {
         return dao.getAllMeals()
     }
 
@@ -14,7 +13,7 @@ class MealRepositoryImpl(private val dao: MealDao): MealsRepository {
         dao.insertMeal(meal)
     }
 
-    override fun deleteAllMeals() {
+    override suspend fun deleteAllMeals() {
         dao.deleteAllMeals()
     }
 

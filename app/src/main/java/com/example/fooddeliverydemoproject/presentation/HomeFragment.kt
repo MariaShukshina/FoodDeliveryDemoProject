@@ -6,13 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fooddeliverydemoproject.R
 import com.example.fooddeliverydemoproject.databinding.FragmentHomeBinding
 import com.example.fooddeliverydemoproject.presentation.utils.Constants
-import com.example.fooddeliverydemoproject.data_source.retrofit.Category
-import com.example.fooddeliverydemoproject.data_source.retrofit.Meal
+import com.example.fooddeliverydemoproject.data.data_source.retrofit.Category
+import com.example.fooddeliverydemoproject.data.data_source.retrofit.Meal
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
@@ -26,7 +30,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding= FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -36,38 +40,40 @@ class HomeFragment : Fragment() {
         val context = requireContext()
 
         val bannersAdapter = BannersRvItemsAdapter()
-        binding.bannersRv.layoutManager = LinearLayoutManager(context,
-            LinearLayoutManager.HORIZONTAL, false)
+        binding.bannersRv.layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL, false
+        )
         binding.bannersRv.adapter = bannersAdapter
         bannersAdapter.setImageList(Constants.promoImageList)
 
         val categoriesAdapter = CategoriesRvItemsAdapter(context)
-        binding.categoriesRv.layoutManager = LinearLayoutManager(context,
-            LinearLayoutManager.HORIZONTAL, false)
+        binding.categoriesRv.layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL, false
+        )
         binding.categoriesRv.adapter = categoriesAdapter
 
         val mealsAdapter = MealsRvItemsAdapter(context)
-        binding.mealsRv.layoutManager = LinearLayoutManager(context,
-            LinearLayoutManager.VERTICAL, false)
+        binding.mealsRv.layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL, false
+        )
         binding.mealsRv.adapter = mealsAdapter
 
         categoriesAdapter.onCategoryClickListener = {
             if (viewModel.internetConnectionState.value == true) {
                 viewModel.getMealsByCategory(it)
             } else {
-                Snackbar.make(binding.root, getString(R.string.no_internet_connection),
-                    Snackbar.LENGTH_SHORT).show()
-                observeMealsFromDb(mealsAdapter, context)
+                Snackbar.make(
+                    binding.root, getString(R.string.no_internet_connection),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                getMealsFromDb(mealsAdapter, context)
             }
         }
 
-        observeCategoriesData(categoriesAdapter, context)
-
-        observeMealsData(mealsAdapter, context)
-
-        observeDataFromDb(context, mealsAdapter, categoriesAdapter)
-
-
+        observeDataFromSources(context, mealsAdapter, categoriesAdapter)
     }
 
     private fun observeCategoriesData(adapter: CategoriesRvItemsAdapter, context: Context) {
@@ -76,9 +82,11 @@ class HomeFragment : Fragment() {
                 adapter.setCategoryList(it.categories)
             } else {
                 val categoryNotFound = context.getString(R.string.no_category_found)
-                adapter.setCategoryList(listOf(
-                    Category("", categoryNotFound, "", "")
-                ))
+                adapter.setCategoryList(
+                    listOf(
+                        Category("", categoryNotFound, "", "")
+                    )
+                )
             }
         }
     }
@@ -89,55 +97,74 @@ class HomeFragment : Fragment() {
                 adapter.setMealsList(it.meals)
             } else {
                 val mealNotFound = context.getString(R.string.no_meal_found)
-                adapter.setMealsList(listOf(
-                    Meal("", mealNotFound, ""),
-                    Meal("", mealNotFound, ""),
-                    Meal("", mealNotFound, "")
-                ))
+                adapter.setMealsList(
+                    listOf(
+                        Meal("", mealNotFound, ""),
+                        Meal("", mealNotFound, ""),
+                        Meal("", mealNotFound, "")
+                    )
+                )
             }
         }
     }
 
-    private fun observeMealsFromDb(adapter: MealsRvItemsAdapter, context: Context) {
-        viewModel.mealsFromDb.observe(viewLifecycleOwner) {
-            if (it != null) {
-                val mealsList = it.map { myMeal ->
+    private fun getMealsFromDb(adapter: MealsRvItemsAdapter, context: Context) {
+        lifecycleScope.launch {
+            val meals = async(Dispatchers.IO) {
+                viewModel.getMealsFromDb()
+            }.await()
+            if (meals.isNotEmpty()) {
+                val mealsList = meals.map { myMeal ->
                     Meal("", myMeal.mealName, myMeal.mealThumb)
                 }
                 adapter.setMealsList(mealsList)
             } else {
                 val mealNotFound = context.getString(R.string.no_meal_found)
-                adapter.setMealsList(listOf(
-                    Meal("", mealNotFound, ""),
-                    Meal("", mealNotFound, ""),
-                    Meal("", mealNotFound, "")
-                ))
+                adapter.setMealsList(
+                    listOf(
+                        Meal("", mealNotFound, ""),
+                        Meal("", mealNotFound, ""),
+                        Meal("", mealNotFound, "")
+                    )
+                )
             }
         }
     }
 
-    private fun observeCategoriesFromDb(adapter: CategoriesRvItemsAdapter, context: Context) {
-        viewModel.categoriesFromDb.observe(viewLifecycleOwner) {
-            if (it != null) {
-                val categoriesList = it.map { myCategory ->
+    private fun getCategoriesFromDb(adapter: CategoriesRvItemsAdapter, context: Context) {
+        lifecycleScope.launch {
+            val categories = async(Dispatchers.IO) {
+                viewModel.getCategoriesFromDb()
+            }.await()
+
+            if (categories.isNotEmpty()) {
+                val categoriesList = categories.map { myCategory ->
                     Category("", myCategory.categoryName, "", "")
                 }
                 adapter.setCategoryList(categoriesList)
             } else {
                 val categoryNotFound = context.getString(R.string.no_category_found)
-                adapter.setCategoryList(listOf(
-                    Category("", categoryNotFound, "", "")
-                ))
+                adapter.setCategoryList(
+                    listOf(
+                        Category("", categoryNotFound, "", "")
+                    )
+                )
             }
         }
+
     }
 
-    private fun observeDataFromDb(context: Context, mealsRvItemsAdapter: MealsRvItemsAdapter,
-                                  categoriesRvItemsAdapter: CategoriesRvItemsAdapter){
+    private fun observeDataFromSources(
+        context: Context, mealsRvItemsAdapter: MealsRvItemsAdapter,
+        categoriesRvItemsAdapter: CategoriesRvItemsAdapter
+    ) {
         viewModel.internetConnectionState.observe(viewLifecycleOwner) {
             if (it == false) {
-                observeMealsFromDb(mealsRvItemsAdapter, context)
-                observeCategoriesFromDb(categoriesRvItemsAdapter, context)
+                getMealsFromDb(mealsRvItemsAdapter, context)
+                getCategoriesFromDb(categoriesRvItemsAdapter, context)
+            } else {
+                observeCategoriesData(categoriesRvItemsAdapter, context)
+                observeMealsData(mealsRvItemsAdapter, context)
             }
         }
     }

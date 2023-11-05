@@ -1,13 +1,12 @@
 package com.example.fooddeliverydemoproject.domain
 
-import androidx.lifecycle.LiveData
-import com.example.fooddeliverydemoproject.data_source.database.MyMeal
+import com.example.fooddeliverydemoproject.data.data_source.database.models.MyMeal
 
 interface MealsRepository {
 
-    fun getAllMeals(): LiveData<List<MyMeal>>
+    fun getAllMeals(): List<MyMeal>
 
-    fun deleteAllMeals()
+    suspend fun deleteAllMeals()
 
     suspend fun insertMeal(meal: MyMeal)
 }

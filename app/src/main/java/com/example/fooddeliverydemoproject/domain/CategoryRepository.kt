@@ -1,14 +1,12 @@
 package com.example.fooddeliverydemoproject.domain
 
-import androidx.lifecycle.LiveData
-import com.example.fooddeliverydemoproject.data_source.database.MyCategory
-import com.example.fooddeliverydemoproject.data_source.database.MyMeal
+import com.example.fooddeliverydemoproject.data.data_source.database.models.MyCategory
 
 interface CategoryRepository {
 
-    fun getAllCategories(): LiveData<List<MyCategory>>
+    fun getAllCategories(): List<MyCategory>
 
-    fun deleteAllCategories()
+    suspend fun deleteAllCategories()
 
     suspend fun insertCategory(category: MyCategory)
 }

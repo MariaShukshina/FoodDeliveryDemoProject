@@ -6,13 +6,14 @@ import android.net.Network
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fooddeliverydemoproject.data_source.database.MyCategory
-import com.example.fooddeliverydemoproject.data_source.database.MyMeal
+import com.example.fooddeliverydemoproject.R
+import com.example.fooddeliverydemoproject.data.data_source.database.models.MyCategory
+import com.example.fooddeliverydemoproject.data.data_source.database.models.MyMeal
 import com.example.fooddeliverydemoproject.domain.CategoryRepository
 import com.example.fooddeliverydemoproject.domain.FoodApiRepository
 import com.example.fooddeliverydemoproject.domain.MealsRepository
-import com.example.fooddeliverydemoproject.data_source.retrofit.CategoriesList
-import com.example.fooddeliverydemoproject.data_source.retrofit.MealsByCategory
+import com.example.fooddeliverydemoproject.data.data_source.retrofit.CategoriesList
+import com.example.fooddeliverydemoproject.data.data_source.retrofit.MealsByCategory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,11 +37,9 @@ class HomeFragmentViewModel(private val repository: FoodApiRepository, context: 
     val internetConnectionState
         get() = _internetConnectionState
 
-    var mealsFromDb = mealsRepository.getAllMeals()
-
-    var categoriesFromDb = categoryRepository.getAllCategories()
 
     init {
+
         viewModelScope.launch {
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -48,10 +47,12 @@ class HomeFragmentViewModel(private val repository: FoodApiRepository, context: 
 
                 override fun onAvailable(network: Network) {
                     _internetConnectionState.postValue(true)
-                    getCategories()
-                    getMealsByCategory("Beef")
-                }
+                    viewModelScope.launch {
+                        getCategories()
+                        getMealsByCategory(context.getString(R.string.beef))
+                    }
 
+                }
                 override fun onLost(network: Network) {
                     _internetConnectionState.postValue(false)
                 }
@@ -61,7 +62,15 @@ class HomeFragmentViewModel(private val repository: FoodApiRepository, context: 
 
     }
 
-    private fun getCategories() {
+    fun getCategoriesFromDb(): List<MyCategory> {
+        return categoryRepository.getAllCategories()
+    }
+
+    fun getMealsFromDb(): List<MyMeal> {
+        return mealsRepository.getAllMeals()
+    }
+
+    fun getCategories() {
         viewModelScope.launch {
             repository.getCategories().enqueue(object : Callback<CategoriesList> {
                 override fun onResponse(call: Call<CategoriesList>, response: Response<CategoriesList>) {
@@ -74,12 +83,17 @@ class HomeFragmentViewModel(private val repository: FoodApiRepository, context: 
                     if (categoriesList != null) {
                         viewModelScope.launch {
                             withContext(Dispatchers.IO) {
-                                categoryRepository.deleteAllCategories()
+                                val job = launch {
+                                    categoryRepository.deleteAllCategories()
+                                }
+                                job.join()
                                 val myCategoriesList = categoriesList.map {
                                     MyCategory(id = 0, categoryName = it.strCategory)
                                 }
-                                for (category in myCategoriesList) {
-                                    categoryRepository.insertCategory(category)
+                                launch {
+                                    for (category in myCategoriesList) {
+                                        categoryRepository.insertCategory(category)
+                                    }
                                 }
                             }
                         }
@@ -87,6 +101,7 @@ class HomeFragmentViewModel(private val repository: FoodApiRepository, context: 
                 }
 
                 override fun onFailure(call: Call<CategoriesList>, t: Throwable) {
+                    _categoriesResponse.postValue(null)
                     t.printStackTrace()
                 }
             })
@@ -109,12 +124,17 @@ class HomeFragmentViewModel(private val repository: FoodApiRepository, context: 
                     if (mealsList != null) {
                         viewModelScope.launch {
                             withContext(Dispatchers.IO) {
-                                mealsRepository.deleteAllMeals()
+                                val job = launch {
+                                    mealsRepository.deleteAllMeals()
+                                }
+                                job.join()
                                 val myMealsList = mealsList.map {
                                     MyMeal(id = 0, mealName = it.strMeal, mealThumb = it.strMealThumb)
                                 }
-                                for (meal in myMealsList) {
-                                    mealsRepository.insertMeal(meal)
+                                launch {
+                                    for (meal in myMealsList) {
+                                        mealsRepository.insertMeal(meal)
+                                    }
                                 }
                             }
                         }

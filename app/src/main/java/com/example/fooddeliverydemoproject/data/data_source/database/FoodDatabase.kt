@@ -1,7 +1,9 @@
-package com.example.fooddeliverydemoproject.data_source.database
+package com.example.fooddeliverydemoproject.data.data_source.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.fooddeliverydemoproject.data.data_source.database.models.MyCategory
+import com.example.fooddeliverydemoproject.data.data_source.database.models.MyMeal
 
 @Database(entities = [MyCategory::class, MyMeal::class], version = 1)
 

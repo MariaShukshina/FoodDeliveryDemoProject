@@ -4,12 +4,12 @@ import androidx.room.Room
 import com.example.fooddeliverydemoproject.data.CategoryRepositoryImpl
 import com.example.fooddeliverydemoproject.data.FoodApiRepositoryImpl
 import com.example.fooddeliverydemoproject.data.MealRepositoryImpl
-import com.example.fooddeliverydemoproject.data_source.database.FoodDatabase
+import com.example.fooddeliverydemoproject.data.data_source.database.FoodDatabase
 import com.example.fooddeliverydemoproject.domain.CategoryRepository
 import com.example.fooddeliverydemoproject.domain.FoodApiRepository
 import com.example.fooddeliverydemoproject.domain.MealsRepository
 import com.example.fooddeliverydemoproject.presentation.HomeFragmentViewModel
-import com.example.fooddeliverydemoproject.data_source.retrofit.FoodApiService
+import com.example.fooddeliverydemoproject.data.data_source.retrofit.FoodApiService
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
