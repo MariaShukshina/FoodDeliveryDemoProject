@@ -6,17 +6,17 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.fooddeliverydemoproject.presentation.HomeFragment"
+        android:name="com.mshukshina.fooddeliverydemoproject.presentation.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.fooddeliverydemoproject.presentation.ProfileFragment"
+        android:name="com.mshukshina.fooddeliverydemoproject.presentation.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/trashFragment"
-        android:name="com.example.fooddeliverydemoproject.presentation.TrashFragment"
+        android:name="com.mshukshina.fooddeliverydemoproject.presentation.TrashFragment"
         android:label="fragment_trash"
         tools:layout="@layout/fragment_trash" />
 </navigation>

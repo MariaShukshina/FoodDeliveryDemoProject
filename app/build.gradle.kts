@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.fooddeliverydemoproject"
+    namespace = "com.mshukshina.fooddeliverydemoproject"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.fooddeliverydemoproject"
+        applicationId = "com.mshukshina.fooddeliverydemoproject"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
